@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "react-app",
+    "plugin:prettier/recommended",
+    "prettier/flowtype",
+    "prettier/react"
+  ],
+  "rules": {
+    "prettier/prettier": [
+      "error",
+      { "singleQuote": true },
+      {
+        "usePrettierrc": false
+      }
+    ]
+  }
+}
