@@ -12,7 +12,12 @@ class Swagger {
 
   getAllEvents = async () => {
     const res = await axios.get(this._apiBase);
-    return res.data.map(this._transformEvents);
+    if (res.data === null) {
+      //throw new Error(`Could not fetch events, received ${res.status}`);
+      return [];
+    } else {
+      return res.data.map(this._transformEvents);
+    }
   };
 
   deleteEvent = async (eventId) => {

@@ -1,25 +1,15 @@
 import React from 'react';
 import './calendarTable.css';
 import { TableCell } from '../index';
+import { time } from '../../config';
 
-const CalendarTable = () => {
+const CalendarTable = ({ eventsFromServer, deleteById }) => {
   const classes = [
     'cell-mon-',
     'cell-tue-',
     'cell-wed-',
     'cell-thu-',
     'cell-fri-',
-  ];
-  const time = [
-    '10:00',
-    '11:00',
-    '12:00',
-    '13:00',
-    '14:00',
-    '15:00',
-    '16:00',
-    '17:00',
-    '18:00',
   ];
 
   const rows = time.map((time) => (
@@ -30,6 +20,8 @@ const CalendarTable = () => {
           className={className}
           time={time.slice(0, 2)}
           key={className}
+          eventsFromServer={eventsFromServer}
+          deleteById={deleteById}
         />
       ))}
     </tr>
