@@ -6,15 +6,15 @@ const users = [
 ];
 
 const time = [
-  '10:00',
-  '11:00',
-  '12:00',
-  '13:00',
-  '14:00',
-  '15:00',
-  '16:00',
-  '17:00',
-  '18:00',
+  { fullTime: '10:00', value: '10' },
+  { fullTime: '11:00', value: '11' },
+  { fullTime: '12:00', value: '12' },
+  { fullTime: '13:00', value: '13' },
+  { fullTime: '14:00', value: '14' },
+  { fullTime: '15:00', value: '15' },
+  { fullTime: '16:00', value: '16' },
+  { fullTime: '17:00', value: '17' },
+  { fullTime: '18:00', value: '18' },
 ];
 
 const daysOfWeek = [

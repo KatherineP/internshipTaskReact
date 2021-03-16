@@ -13,12 +13,12 @@ const CalendarTable = ({ eventsFromServer, deleteById }) => {
   ];
 
   const rows = time.map((time) => (
-    <tr key={time + Math.floor(Math.random() * 100)}>
-      <th scope="row">{time}</th>
+    <tr key={time.value + Math.floor(Math.random() * 100)}>
+      <th scope="row">{time.fullTime}</th>
       {classes.map((className) => (
         <TableCell
           className={className}
-          time={time.slice(0, 2)}
+          time={time.value}
           key={className}
           eventsFromServer={eventsFromServer}
           deleteById={deleteById}

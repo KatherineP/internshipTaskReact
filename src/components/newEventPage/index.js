@@ -1,9 +1,76 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './newEventPage.css';
 import { UserDropdown } from '../index';
 import { time, daysOfWeek } from '../../config';
 
-const NewEventPage = () => {
+const NewEventPage = ({ getNewEvent, onCancelNewEvent }) => {
+  const [event, setEvent] = useState({});
+  const [eventTextError, setEventTextError] = useState(false);
+  const [eventParticipantsError, setEventParticipantsError] = useState(false);
+  const [eventDayError, setEventDayError] = useState(false);
+  const [eventTimeError, setEventTimeError] = useState(false);
+
+  const handleSubmit = (e) => {
+    const hasText = event.hasOwnProperty('eventText');
+    const hasParticipants = event.hasOwnProperty('participants');
+    const hasDay = event.hasOwnProperty('day');
+    const hasTime = event.hasOwnProperty('time');
+    e.preventDefault();
+    if (!hasText) {
+      setEventTextError(true);
+    } else if (!hasParticipants) {
+      setEventParticipantsError(true);
+    } else if (!hasDay) {
+      setEventDayError(true);
+    } else if (!hasTime) {
+      setEventTimeError(true);
+    }
+    if (hasText && hasParticipants && hasDay && hasTime) {
+      getNewEvent(event);
+    }
+  };
+
+  const handleChangeEventText = (e) => {
+    if (e.target.value) {
+      setEvent({
+        ...event,
+        eventText: e.target.value,
+      });
+      setEventTextError(false);
+    }
+  };
+
+  const handleChangeEventParticipants = (e) => {
+    const arr = Array.from(e.target.selectedOptions, (option) => option.value);
+    if (arr) {
+      setEvent({
+        ...event,
+        participants: arr,
+      });
+      setEventParticipantsError(false);
+    }
+  };
+
+  const handleChangeEventTime = (e) => {
+    if (e.target.value.match('^[0-9]{2}$')) {
+      setEvent({
+        ...event,
+        time: e.target.value,
+      });
+      setEventTimeError(false);
+    }
+  };
+
+  const handleChangeEventDay = (e) => {
+    if (e.target.value.match('[a-z]{3}')) {
+      setEvent({
+        ...event,
+        day: e.target.value,
+      });
+      setEventDayError(false);
+    }
+  };
+
   return (
     <form id="form">
       <div className="form-group row">
@@ -17,7 +84,11 @@ const NewEventPage = () => {
             id="inputNameEvent"
             placeholder="Name of the event:"
             required
+            onChange={handleChangeEventText}
           />
+          {eventTextError && (
+            <p className="error">Please fill in the text of the event</p>
+          )}
         </div>
       </div>
 
@@ -35,9 +106,13 @@ const NewEventPage = () => {
             className="form-control"
             multiple
             required
+            onChange={handleChangeEventParticipants}
           >
             <UserDropdown />
           </select>
+          {eventParticipantsError && (
+            <p className="error">Please select participants</p>
+          )}
         </div>
       </div>
 
@@ -46,7 +121,12 @@ const NewEventPage = () => {
           Day:
         </label>
         <div className="col-sm-10">
-          <select id="day" className="form-control" required>
+          <select
+            id="day"
+            className="form-control"
+            required
+            onChange={handleChangeEventDay}
+          >
             <option value="">Choose...</option>
             {daysOfWeek.map((day) => (
               <option value={day.value} key={day.value}>
@@ -54,6 +134,7 @@ const NewEventPage = () => {
               </option>
             ))}
           </select>
+          {eventDayError && <p className="error">Please select day</p>}
         </div>
       </div>
 
@@ -62,21 +143,37 @@ const NewEventPage = () => {
           Time:
         </label>
         <div className="col-sm-10">
-          <select id="time" className="form-control" required>
+          <select
+            id="time"
+            className="form-control"
+            required
+            onChange={handleChangeEventTime}
+          >
             <option value="">Choose...</option>
             {time.map((time) => (
-              <option value="10" key={time}>
-                {time}
+              <option value={time.value} key={time.value}>
+                {time.fullTime}
               </option>
             ))}
           </select>
+          {eventTimeError && <p className="error">Please select time</p>}
         </div>
       </div>
       <div className="d-flex justify-content-end">
-        <button id="cancel" type="reset" className="btn btn-secondary mr-3">
+        <button
+          id="cancel"
+          type="reset"
+          className="btn btn-secondary mr-3"
+          onClick={onCancelNewEvent}
+        >
           Cancel
         </button>
-        <button id="create" type="submit" className="btn btn-secondary">
+        <button
+          id="create"
+          type="submit"
+          className="btn btn-secondary"
+          onClick={handleSubmit}
+        >
           Create
         </button>
       </div>
