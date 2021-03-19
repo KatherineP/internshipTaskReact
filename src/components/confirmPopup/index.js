@@ -1,25 +1,32 @@
 import React, { useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteEvent } from '../../store/middleware';
+import { closePopup } from '../../store/actionCreators';
 
-const ConfirmPopup = ({ eventTitle, eventId, deleteById }) => {
-  const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
+const ConfirmPopup = ({ confirmationPopup }) => {
+  const dispatch = useDispatch();
+  const deletedEvent = useSelector((state) => state.deletedEvent);
+  const { eventText, id } = deletedEvent;
+  const handleClose = () => dispatch(closePopup());
 
   return (
     <div>
-      <Modal show={show} onHide={handleClose} keyboard={false} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Please authorize</Modal.Title>
-        </Modal.Header>
+      <Modal
+        show={confirmationPopup}
+        onHide={handleClose}
+        keyboard={false}
+        centered
+      >
         <Modal.Body>
-          {`Are you sure you want to delete "${eventTitle}" event?`}
+          {`Are you sure you want to delete "${eventText}" event?`}
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => handleClose()}>
+          <Button variant="secondary" onClick={() => dispatch(closePopup())}>
             No
           </Button>
-          <Button variant="secondary" onClick={() => deleteById(eventId)}>
+          <Button variant="secondary" onClick={() => dispatch(deleteEvent(id))}>
             Yes
           </Button>
         </Modal.Footer>

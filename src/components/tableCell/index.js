@@ -1,50 +1,35 @@
-import React, { useContext, useState } from 'react';
+import React from 'react';
 import './tableCell.css';
-import { UserContext } from '../index';
-import { ConfirmPopup } from '../index';
+import { useSelector, useDispatch } from 'react-redux';
+import { showDeleteConfirmation } from '../../store/actionCreators';
 
-const TableCell = ({ className, time, eventsFromServer, deleteById }) => {
-  const [confirmationPopup, setConfirmationPopup] = useState(false);
-  const authUser = useContext(UserContext);
-  const cellClass = `${className}${time}`;
-  const event = eventsFromServer.find(
-    (event) => cellClass === `cell-${event.day}-${event.time}`
+const TableCell = ({ time, day, events }) => {
+  const dispatch = useDispatch();
+  const isAdmin = useSelector((state) => state.isAdmin);
+
+  const event = events.find(
+    (event) => event.day === day && event.time === time
   );
-  const showConfirmationPopup = () => {
-    setConfirmationPopup(!confirmationPopup);
-  };
 
-  if (event !== undefined) {
-    return (
-      <td className={`${cellClass} event`}>
-        <div id={cellClass}>
-          {event.eventText}
-          {authUser.isAdmin && (
-            <button
-              type="button"
-              id="delete-event"
-              className="close"
-              aria-label="Close"
-              onClick={() => {
-                showConfirmationPopup();
-              }}
-            >
-              <span className="delete-event">&times;</span>
-            </button>
-          )}
-          {confirmationPopup && (
-            <ConfirmPopup
-              eventTitle={event.eventText}
-              eventId={event.id}
-              deleteById={deleteById}
-            />
-          )}
-        </div>
-      </td>
-    );
-  } else {
-    return <td className={cellClass}></td>;
-  }
+  if (event === undefined) return <td></td>;
+
+  return (
+    <td className="event">
+      <div>
+        {event.eventText}
+        {isAdmin && (
+          <button
+            type="button"
+            aria-label="Close"
+            className="close"
+            onClick={() => dispatch(showDeleteConfirmation(event))}
+          >
+            <span className="delete-event">&times;</span>
+          </button>
+        )}
+      </div>
+    </td>
+  );
 };
 
 export { TableCell };

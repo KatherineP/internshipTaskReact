@@ -1,11 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import './header.css';
 import { UserDropdown } from '../index';
-import { UserContext } from '../index';
+import {
+  getParticipantFromFilter,
+  showNewEventForm,
+} from '../../store/actionCreators';
+import { useSelector, useDispatch } from 'react-redux';
 
-const Header = ({ getFilteredUser, openNewEventForm }) => {
-  const authUser = useContext(UserContext);
-
+const Header = () => {
+  const dispatch = useDispatch();
+  const isAdmin = useSelector((state) => state.isAdmin);
   return (
     <div className="d-flex justify-content-between">
       <h1>Calendar</h1>
@@ -14,7 +18,7 @@ const Header = ({ getFilteredUser, openNewEventForm }) => {
           <select
             className="custom-select users-filter"
             onChange={(e) => {
-              getFilteredUser(e.target.value);
+              dispatch(getParticipantFromFilter(e.target.value));
             }}
           >
             <option value="All members">All members</option>
@@ -22,11 +26,11 @@ const Header = ({ getFilteredUser, openNewEventForm }) => {
           </select>
         </div>
         <div>
-          {authUser.isAdmin && (
+          {isAdmin && (
             <button
               type="button"
               className="btn btn-secondary new-event"
-              onClick={() => openNewEventForm()}
+              onClick={() => dispatch(showNewEventForm())}
             >
               New Event +
             </button>

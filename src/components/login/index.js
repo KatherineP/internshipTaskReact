@@ -1,29 +1,26 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { UserDropdown } from '../index';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import { useSelector, useDispatch } from 'react-redux';
+import { getAuthUser, login } from '../../store/actionCreators';
 
-const Login = ({ getAuthUser }) => {
-  const [show, setShow] = useState(true);
-  const [selectValue, setSelectValue] = useState('Kate Prokofieva');
-  const handleClose = () => setShow(false);
+const Login = () => {
+  const dispatch = useDispatch();
+  const showLoginPopUp = useSelector((state) => state.showLoginPopUp);
 
   return (
     <div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-        centered
-      >
-        <Modal.Header closeButton>
+      <Modal show={showLoginPopUp} backdrop="static" keyboard={false} centered>
+        <Modal.Header>
           <Modal.Title>Please authorize</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <select
             className="custom-select auth-select"
-            onChange={(e) => setSelectValue(() => e.target.value)}
+            onChange={(e) => {
+              dispatch(getAuthUser(e.target.value));
+            }}
           >
             <UserDropdown />
           </select>
@@ -32,8 +29,7 @@ const Login = ({ getAuthUser }) => {
           <Button
             variant="secondary"
             onClick={() => {
-              handleClose();
-              getAuthUser(selectValue);
+              dispatch(login());
             }}
           >
             Confirm

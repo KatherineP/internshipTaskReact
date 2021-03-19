@@ -1,46 +1,56 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './calendarTable.css';
-import { TableCell } from '../index';
-import { time } from '../../config';
+import { TableCell, ConfirmPopup } from '../index';
+import { loadAllEvents } from '../../store/middleware';
+import { useSelector, useDispatch } from 'react-redux';
+import { daysOfWeek, time } from '../../config';
+import { filterEvents } from '../../utils';
 
-const CalendarTable = ({ eventsFromServer, deleteById }) => {
-  const classes = [
-    'cell-mon-',
-    'cell-tue-',
-    'cell-wed-',
-    'cell-thu-',
-    'cell-fri-',
-  ];
+const CalendarTable = () => {
+  const dispatch = useDispatch();
+  const events = useSelector((state) => state.events);
+  const confirmationPopup = useSelector((state) => state.showDeletePopUp);
+  const filteredUser = useSelector((state) => state.filterValue);
+
+  useEffect(() => {
+    dispatch(loadAllEvents());
+  }, [dispatch]);
 
   const rows = time.map((time) => (
-    <tr key={time.value + Math.floor(Math.random() * 100)}>
+    <tr key={time.value}>
       <th scope="row">{time.fullTime}</th>
-      {classes.map((className) => (
+      {daysOfWeek.map((day) => (
         <TableCell
-          className={className}
           time={time.value}
-          key={className}
-          eventsFromServer={eventsFromServer}
-          deleteById={deleteById}
+          day={day.value}
+          events={filterEvents(events, filteredUser)}
+          key={`${day.value}${time.value}`}
         />
       ))}
     </tr>
   ));
 
   return (
-    <table className="table table-bordered text-center">
-      <thead className="table-secondary">
-        <tr>
-          {['Name', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map((col) => (
-            <th scope="col" key={col}>
-              {col}
+    <div>
+      {confirmationPopup && (
+        <ConfirmPopup confirmationPopup={confirmationPopup} />
+      )}
+      <table className="table table-bordered text-center">
+        <thead className="table-secondary">
+          <tr>
+            <th scope="col" key="name">
+              Name
             </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </table>
+            {daysOfWeek.map((col) => (
+              <th scope="col" key={col.fullDay}>
+                {col.fullDay}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </table>
+    </div>
   );
 };
-
 export { CalendarTable };

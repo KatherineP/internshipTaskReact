@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './newEventPage.css';
 import { UserDropdown } from '../index';
 import { time, daysOfWeek } from '../../config';
+import { useSelector, useDispatch } from 'react-redux';
+import { postNewEvent } from '../../store/middleware';
+import { isEventDuplicate, closePopup } from '../../store/actionCreators';
+import calendarReducer from '../../store/reducers';
 
-const NewEventPage = ({ getNewEvent, onCancelNewEvent }) => {
+const NewEventPage = () => {
+  const dispatch = useDispatch();
+  const newEvent = useSelector((state) => state.newEvent);
+
   const [event, setEvent] = useState({});
   const [eventTextError, setEventTextError] = useState(false);
   const [eventParticipantsError, setEventParticipantsError] = useState(false);
@@ -26,9 +33,15 @@ const NewEventPage = ({ getNewEvent, onCancelNewEvent }) => {
       setEventTimeError(true);
     }
     if (hasText && hasParticipants && hasDay && hasTime) {
-      getNewEvent(event);
+      dispatch(isEventDuplicate(event));
     }
   };
+
+  useEffect(() => {
+    if (newEvent) {
+      dispatch(postNewEvent(event));
+    }
+  }, [dispatch, newEvent, event]);
 
   const handleChangeEventText = (e) => {
     if (e.target.value) {
@@ -164,7 +177,7 @@ const NewEventPage = ({ getNewEvent, onCancelNewEvent }) => {
           id="cancel"
           type="reset"
           className="btn btn-secondary mr-3"
-          onClick={onCancelNewEvent}
+          onClick={() => dispatch(closePopup())}
         >
           Cancel
         </button>
