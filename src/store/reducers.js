@@ -103,6 +103,7 @@ export function calendarReducer(state = initState, action) {
         showEventForm: false,
         showCalendar: true,
         isEventDuplicate: false,
+        newEvent: null,
       };
     case SHOW_NEW_EVENT_FORM:
       return { ...state, showEventForm: true, showCalendar: false };

@@ -7,7 +7,6 @@ const App = () => {
   const showCalendar = useSelector((state) => state.showCalendar);
   const showEventForm = useSelector((state) => state.showEventForm);
   const isEventDuplicate = useSelector((state) => state.isEventDuplicate);
-
   return (
     <div className="container">
       {showCalendar && (
